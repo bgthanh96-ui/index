@@ -1,183 +1,354 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Giới thiệu - Hạng A Thành</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Trang cá nhân — [Tên của bạn]</title>
+  <meta name="description" content="Trang giới thiệu cá nhân — màu đổi liên tục, dài để cuộn, nhạc nền, hover nổi." />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
+    /* ====== CƠ BẢN ====== */
+    :root{
+      --h: 220;
+      --accent: hsl(var(--h) 100% 60%);
+      --card-bg: rgba(255,255,255,0.04);
+      --glass: rgba(255,255,255,0.03);
+      --txt: 255,255,255;
+      --pop-scale: 1.08;
     }
-    body {
-      background: url("https://i.imgur.com/uYlz864.jpeg") no-repeat center center/cover;
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;color:rgba(var(--txt));background:#000;overflow-x:hidden}
+    a{color:inherit;text-decoration:none}
+    button{font-family:inherit}
+
+    /* ====== Animated background (color cycling) ====== */
+    .bg {
+      position:fixed; inset:0; z-index:-4; pointer-events:none;
+      background: conic-gradient(from 0deg at 50% 50%,
+        hsl(var(--h) 90% 60%),
+        hsl(calc(var(--h) + 60) 90% 60%),
+        hsl(calc(var(--h) + 120) 90% 60%),
+        hsl(calc(var(--h) + 180) 90% 60%),
+        hsl(calc(var(--h) + 240) 90% 60%),
+        hsl(calc(var(--h) + 300) 90% 60%));
+      filter: blur(80px) saturate(140%);
+      transform: scale(1.2);
+      opacity:0.9;
     }
-    .overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.45);
-      z-index: 0;
-      backdrop-filter: blur(3px);
+
+    .bg-stripes{
+      position:fixed; inset:0; z-index:-3; pointer-events:none;
+      background: linear-gradient(120deg, rgba(255,255,255,0.02), transparent 20%);
+      mix-blend-mode:overlay; filter: blur(18px);
     }
-    .card {
-      position: relative;
-      background: rgba(255,255,255,0.1);
-      border-radius: 25px;
-      padding: 30px;
-      width: 90%;
-      max-width: 380px;
-      text-align: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      backdrop-filter: blur(15px);
-      overflow: hidden;
-      z-index: 1;
+
+    /* ====== Page layout ====== */
+    .wrap{max-width:1100px;margin:0 auto;padding:40px 20px}
+    header{display:flex;align-items:center;gap:18px;margin-bottom:12px}
+    .avatar{width:96px;height:96px;border-radius:18px;display:grid;place-items:center;font-weight:800;font-size:28px;
+      background: linear-gradient(135deg,var(--accent), hsl(calc(var(--h)+80) 90% 55%)); box-shadow: 0 10px 30px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.06)}
+    h1{margin:0;font-size:26px}
+    p.lead{margin:4px 0 0;opacity:0.95}
+
+    /* ====== Controls nhạc ====== */
+    .music-control{
+      position:fixed; right:18px; bottom:18px; z-index:40;
+      background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border-radius:14px; padding:10px 12px; border:1px solid rgba(255,255,255,0.08);
+      display:flex; align-items:center; gap:10px; backdrop-filter: blur(6px);
+      box-shadow: 0 8px 26px rgba(0,0,0,0.5);
     }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: var(--y);
-      left: var(--x);
-      width: 0;
-      height: 0;
-      background: rgba(255,255,255,0.3);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      animation: ripple 0.7s linear;
-      pointer-events: none;
-      z-index: 0;
+    .music-control button{background:transparent;border:0;color:inherit;cursor:pointer;font-weight:700;padding:6px 10px;border-radius:10px}
+    .music-control .label{opacity:0.95;font-size:13px}
+
+    /* ====== Sections / cards ====== */
+    section{margin-top:26px}
+    .links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:12px}
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;padding:18px; border:1px solid rgba(255,255,255,0.05);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+      transition: transform 240ms cubic-bezier(.2,.9,.2,1), box-shadow 240ms;
+      will-change: transform, box-shadow;
+      min-height:120px;
     }
-    @keyframes ripple {
-      to {
-        width: 300px;
-        height: 300px;
-        opacity: 0;
-      }
+    .card h3{margin:0 0 8px 0}
+    .card p{margin:0;opacity:0.9}
+
+    /* ====== Hover pop effect (chỗ con trỏ tới sẽ nổi lên) ======
+       JS sẽ gán class .is-pop cho phần tử được hover -> scale & glow */
+    .is-pop{
+      transform: translateY(-10px) scale(var(--pop-scale)) !important;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 40px rgba(255,255,255,0.06) !important;
+      z-index:50;
+      border-color: rgba(255,255,255,0.12) !important;
     }
-    img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid white;
-      margin-bottom: 15px;
-    }
-    h2 {
-      font-size: 24px;
-      font-weight: 700;
-    }
-    p {
-      margin-top: 5px;
-      font-size: 14px;
-      opacity: 0.9;
-    }
-    .links {
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .links a {
-      text-decoration: none;
-      color: white;
-      background: rgba(255,255,255,0.2);
-      padding: 10px 20px;
-      border-radius: 30px;
-      transition: 0.3s;
-    }
-    .links a:hover {
-      background: white;
-      color: #0072ff;
-    }
-    footer {
-      margin-top: 20px;
-      font-size: 13px;
-      opacity: 0.7;
-    }
-    .music-control {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(255,255,255,0.3);
-      border: none;
-      border-radius: 50%;
-      width: 55px;
-      height: 55px;
-      color: white;
-      font-size: 24px;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      transition: 0.3s;
-      z-index: 10;
-    }
-    .music-control:hover {
-      background: white;
-      color: #0072ff;
+
+    /* Giữ layout ổn cho những phần tử không nên scale quá nhiều */
+    .no-pop{ pointer-events:auto }
+
+    /* ====== Gallery dài để cuộn thoải mái ====== */
+    .gallery{display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:14px; margin-top:12px}
+    .gallery .card{min-height:220px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px}
+
+    /* ====== Footer ====== */
+    footer{margin:60px 0 120px; text-align:center; opacity:0.95}
+
+    /* ====== Small responsive ====== */
+    @media (max-width:680px){
+      .avatar{width:72px;height:72px;border-radius:12px;font-size:20px}
+      .wrap{padding:20px}
     }
   </style>
 </head>
 <body>
-  <div class="overlay"></div>
+  <!-- Animated backgrounds -->
+  <div class="bg" aria-hidden></div>
+  <div class="bg-stripes" aria-hidden></div>
 
-  <div class="card" id="card">
-    <img src="https://i.imgur.com/q5NDi1V.png" alt="Avatar">
-    <h2>Hạng A Thành (Thành LTV)</h2>
-    <p>🎂 Sinh ngày: 06/01/2010</p>
-    <p>🏫 Học sinh lớp 10A5 - THPT Số 1 Sa Pa</p>
-    <p>📞 SĐT: 0854749446</p>
-
-    <div class="links">
-      <a href="https://www.facebook.com/ha.t.thanh.31344?mibextid=ZbWKwL" target="_blank">🌐 Facebook</a>
-      <a href="https://zalo.me/0854749446" target="_blank">💬 Zalo</a>
-      <a href="#" target="_blank">🎵 TikTok (đang cập nhật)</a>
-      <a href="tel:0854749446">📱 Gọi điện</a>
-    </div>
-
-    <footer>© 2025 Hạng A Thành | Made with 💙</footer>
-  </div>
-
-  <!-- 🎶 Nhạc nền (Sơn Tùng M-TP - Có Chắc Yêu Là Đây) -->
-  <audio id="bg-music" loop autoplay>
-    <source src="https://cdn.jsdelivr.net/gh/ThienAnIT/music-host/CoChacYeuLaDay_SonTungMTP.mp3" type="audio/mpeg">
+  <!-- Nhạc nền: THAY 'audio/em-co-biet-h2k-lofi.mp3' bằng URL/file nhạc thật của bạn -->
+  <!-- Lưu ý: trình duyệt có thể chặn autoplay nếu chưa tương tác -->
+  <audio id="bg-audio" loop preload="auto">
+    <source src="audio/em-co-biet-h2k-lofi.mp3" type="audio/mpeg">
+    <!-- Nếu bạn có URL từ host của riêng bạn, thay src bằng URL đó, ví dụ: https://yourdomain.com/music/emcobiet.mp3 -->
   </audio>
 
-  <!-- Nút điều khiển nhạc -->
-  <button class="music-control" id="musicBtn">🎶</button>
+  <div class="wrap">
+    <header>
+      <div class="avatar" id="avatar">TN</div>
+      <div>
+        <h1 id="myname">[Tên của bạn]</h1>
+        <p class="lead">Nhà sáng tạo · Làm web · Yêu màu sắc — Kéo xuống để xem các trang & dự án tôi đã làm.</p>
+      </div>
+    </header>
+
+    <!-- Quick links -->
+    <section>
+      <h2>Liên kết nhanh</h2>
+      <div class="links-grid">
+        <a class="card" href="https://example.com" target="_blank" data-title="Website chính">
+          <div>
+            <h3>Website chính</h3>
+            <p>Homepage & project showcase</p>
+          </div>
+        </a>
+
+        <a class="card" href="https://github.com/username" target="_blank" data-title="GitHub">
+          <div>
+            <h3>GitHub</h3>
+            <p>Repository, demo, code</p>
+          </div>
+        </a>
+
+        <a class="card" href="https://blog.example.com" target="_blank" data-title="Blog">
+          <div>
+            <h3>Blog</h3>
+            <p>Bài viết, ghi chú, tutorial</p>
+          </div>
+        </a>
+
+        <a class="card" href="https://portfolio.example.com" target="_blank" data-title="Portfolio">
+          <div>
+            <h3>Portfolio</h3>
+            <p>UI / UX / Thiết kế</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Một phần giới thiệu lớn để trang dài hơn -->
+    <section>
+      <div class="card">
+        <h2>Giới thiệu</h2>
+        <p>Xin chào — mình là [Tên của bạn]. Mình làm web, thiết kế giao diện và thích các hiệu ứng màu sắc. Trang này được thiết kế dài để bạn kéo lên kéo xuống, thư giãn với nhạc và xem các dự án mình đã làm.</p>
+        <p style="margin-top:12px;opacity:0.95">Bạn có thể thay nội dung, thêm ảnh hoặc nhúng video ở các khối dưới.</p>
+      </div>
+    </section>
+
+    <!-- Gallery dài -->
+    <section>
+      <h2>Gallery & Demo</h2>
+      <div class="gallery" id="gallery">
+        <div class="card">Demo 1</div>
+        <div class="card">Demo 2</div>
+        <div class="card">Demo 3</div>
+        <div class="card">Demo 4</div>
+        <div class="card">Demo 5</div>
+        <div class="card">Demo 6</div>
+        <div class="card">Demo 7</div>
+        <div class="card">Demo 8</div>
+      </div>
+    </section>
+
+    <!-- Timeline để làm dài trang -->
+    <section>
+      <h2>Timeline</h2>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+        <div class="card">2022 — Bắt đầu học web</div>
+        <div class="card">2023 — Ra mắt Website A</div>
+        <div class="card">2024 — Làm nhiều demo & portfolio</div>
+        <div class="card">2025 — Cập nhật giao diện mới</div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section>
+      <h2>Đánh giá</h2>
+      <div class="links-grid" style="margin-top:12px">
+        <div class="card">"Thiết kế rất đẹp" — Người A</div>
+        <div class="card">"Tương tác mượt mà" — Người B</div>
+        <div class="card">"Màu sắc ấn tượng" — Người C</div>
+      </div>
+    </section>
+
+    <!-- Blog excerpts -->
+    <section>
+      <h2>Bài viết nổi bật</h2>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+        <div class="card">Bài viết 1 — Mô tả ngắn...</div>
+        <div class="card">Bài viết 2 — Mô tả ngắn...</div>
+        <div class="card">Bài viết 3 — Mô tả ngắn...</div>
+      </div>
+    </section>
+
+    <!-- Call to action -->
+    <section>
+      <div class="card" style="text-align:center;padding:30px">
+        <h2>Muốn mình chỉnh thêm?</h2>
+        <p style="opacity:0.95">Nói mình biết: thêm nhạc nền tự động, hiệu ứng giọt nước khi bấm, ảnh avatar, hoặc phong cách iOS liquid — mình sẽ cập nhật.</p>
+        <div style="margin-top:12px"><button onclick="scrollToTop()" style="padding:10px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),hsl(calc(var(--h)+90) 90% 55%));color:#000;font-weight:700;cursor:pointer">Lên đầu trang</button></div>
+      </div>
+    </section>
+
+    <footer>
+      <small>© <span id="year"></span> [Tên của bạn] — Thiết kế: màu đổi liên tục & hover nổi</small>
+    </footer>
+  </div>
+
+  <!-- Music control UI -->
+  <div class="music-control" id="musicControl" aria-hidden>
+    <div>
+      <button id="playPause" title="Tạm dừng / Phát">⏯</button>
+    </div>
+    <div class="label" id="musicLabel">Em có biết - H2K (lofi)</div>
+  </div>
 
   <script>
-    // Hiệu ứng giọt nước
-    const card = document.getElementById("card");
-    card.addEventListener("click", function(e) {
-      const x = e.clientX - card.getBoundingClientRect().left;
-      const y = e.clientY - card.getBoundingClientRect().top;
-      card.style.setProperty("--x", x + "px");
-      card.style.setProperty("--y", y + "px");
-    });
-
-    // Điều khiển nhạc
-    const music = document.getElementById("bg-music");
-    const btn = document.getElementById("musicBtn");
-    let playing = true;
-
-    btn.addEventListener("click", () => {
-      if (playing) {
-        music.pause();
-        btn.textContent = "🔇";
-      } else {
-        music.play();
-        btn.textContent = "🎶";
+    // ========== Auto hue animation ==========
+    (function animateHue(){
+      const root = document.documentElement;
+      let h = 220;
+      function step(){
+        h += 0.18;
+        if(h >= 360) h -= 360;
+        root.style.setProperty('--h', Math.round(h));
+        requestAnimationFrame(step);
       }
-      playing = !playing;
+      requestAnimationFrame(step);
+    })();
+
+    // ========== Audio setup ==========
+    const audio = document.getElementById('bg-audio');
+    const btn = document.getElementById('playPause');
+    const label = document.getElementById('musicLabel');
+
+    // Try to autoplay — may be blocked until user interacts.
+    function tryPlay(){
+      audio.play().catch(()=>{/* blocked until user gesture */});
+    }
+    // Start tryPlay after first user gesture to ensure audio can play
+    ['click','touchstart','mousemove','keydown'].forEach(ev => {
+      window.addEventListener(ev, tryPlay, {once:true, passive:true});
     });
+
+    // Play/pause button
+    btn.addEventListener('click', ()=>{
+      if(audio.paused){ audio.play(); btn.textContent = '⏸'; } else { audio.pause(); btn.textContent = '▶'; }
+    });
+    // Set initial icon
+    audio.paused ? btn.textContent = '▶' : btn.textContent = '⏸';
+
+    // ========== Scroll to top helper ==========
+    function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+
+    // ========== Hover pop effect: "chỗ con trỏ đến thì nổi lên" ==========
+    // Approach:
+    // - Theo dõi pointermove, lấy element dưới con trỏ (elementFromPoint)
+    // - Gán class .is-pop cho phần tử đó (và xóa khỏi phần tử trước)
+    // - Một số phần tử (body, html, bg divs) sẽ bị loại khỏi việc pop
+    let lastPop = null;
+    const excludeTags = ['HTML','BODY','SCRIPT','STYLE','AUDIO','SOURCE'];
+    function isEligible(el){
+      if(!el) return false;
+      if(!(el instanceof Element)) return false;
+      if(excludeTags.includes(el.tagName)) return false;
+      // tránh pop các phần tử quá lớn (thẻ <main> hoặc .wrap) nếu muốn, có thể tinh chỉnh
+      const rect = el.getBoundingClientRect();
+      if(rect.width < 30 || rect.height < 20) return false;
+      return true;
+    }
+
+    document.addEventListener('pointermove', e=>{
+      // elementFromPoint có thể trả button nội bộ, lấy phần tử tối ưu để pop: nếu el là child nhỏ, tìm ancestor có class card, hoặc chính nó
+      let el = document.elementFromPoint(e.clientX, e.clientY);
+      if(!el) return;
+      // nếu là con nhỏ trong card, tìm card cha
+      const cardAncestor = el.closest('.card');
+      if(cardAncestor && isEligible(cardAncestor)) el = cardAncestor;
+
+      // kiểm tra eligibility
+      if(!isEligible(el)){
+        if(lastPop){
+          lastPop.classList.remove('is-pop');
+          lastPop = null;
+        }
+        return;
+      }
+
+      // nếu element khác element trước -> cập nhật class
+      if(el !== lastPop){
+        if(lastPop) lastPop.classList.remove('is-pop');
+        lastPop = el;
+        lastPop.classList.add('is-pop');
+      }
+    }, {passive:true});
+
+    // Khi con trỏ rời khỏi cửa sổ -> xóa hiệu ứng
+    document.addEventListener('pointerleave', ()=>{
+      if(lastPop){ lastPop.classList.remove('is-pop'); lastPop = null; }
+    });
+
+    // ========== Light follow (tạo điểm sáng nhẹ theo con trỏ) ==========
+    // Chúng ta sẽ tạo hiệu ứng bằng cách đặt background radial trên body (nhẹ) — không làm chói.
+    document.addEventListener('mousemove', e=>{
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      // Layer nhẹ, không phủ nội dung
+      document.querySelector('.bg-stripes').style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.06), transparent 12%), linear-gradient(120deg, rgba(255,255,255,0.02), transparent 20%)`;
+    }, {passive:true});
+
+    // ========== Init year and small niceties ==========
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Accessibility: nếu người dùng tab đến phần tử, cũng áp dụng pop
+    document.addEventListener('focusin', e=>{
+      const el = e.target.closest('.card, a, button');
+      if(el){
+        if(lastPop) lastPop.classList.remove('is-pop');
+        el.classList.add('is-pop');
+        lastPop = el;
+      }
+    });
+    document.addEventListener('focusout', e=>{
+      const el = e.target.closest('.card, a, button');
+      if(el){
+        el.classList.remove('is-pop');
+        if(lastPop === el) lastPop = null;
+      }
+    });
+
+    // --- Lưu ý:
+    // 1) Thay src của <audio> bằng file nhạc "Em có biết - H2K (lofi)" mà bạn có (URL hoặc đường dẫn).
+    // 2) Một số trình duyệt chặn autoplay cho nhạc trước tương tác người dùng -> nhấn '▶' hoặc tương tác trang để bắt đầu.
   </script>
 </body>
 </html>
